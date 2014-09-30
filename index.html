@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>thaw.js - Now with extra anti-freeze!</title>
+	<script src="thaw.js"></script>
+	<style>
+		body {
+			width: 400px;
+			margin-left: auto;
+			margin-right: auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>thaw.js</h1>
+	<p id="p1">
+		Browsers are syncronis. They have limits & can be slow.  thaw.js defers processes
+		until the browser is ready for them.<br>
+		thaw.js makes frozen browsers thaw(.js).
+	</p>
+</body>
+<script>
+	console.log("start");
+
+	var startTime = new Date(),
+		workCounter=0,
+		items = new Array(2000000),
+		body = document.body,
+		p1 = document.getElementById('p1'),
+		ms;
+
+	thaw(items, 50, {
+		each:function() {
+			var s = document.createElement("div");
+			s.innerHTML = (new Array(5)).join(workCounter);
+			body.insertBefore(s, p1.nextSibling);
+			workCounter++;
+		},
+		done: function() {
+			ms = (new Date()).getTime() - startTime.getTime();
+			console.log("done: workCounter=" + workCounter + " time=" + ms + "ms");
+		}
+	});
+
+</script>
+</html>
