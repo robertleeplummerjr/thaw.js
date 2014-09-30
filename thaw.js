@@ -47,7 +47,7 @@ var thaw = (function() {
 	}
 
 	thaw.isThawing = function() {
-		return busy;
+		return thawing;
 	};
 
 	return thaw;
