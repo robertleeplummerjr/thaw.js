@@ -11,38 +11,87 @@
 			margin-right: auto;
 			text-align: center;
 		}
+		p, h2, pre {
+			width: 100%;
+			text-align: left;
+		}
 	</style>
 </head>
 <body>
 	<h1>thaw.js</h1>
-	<p id="p1">
-		Browsers are syncronis. They have limits & can be slow.  thaw.js defers processes
+	<p>
+		Browsers are synchronous. They have limits & can be slow.  thaw.js defers processes
 		until the browser is ready for them.<br>
 		thaw.js makes frozen browsers thaw(.js).
 	</p>
+
+	<h2>Shouldn't I just use a web worker?</h2>
+	<p>
+		You could, if you don't care about the DOM, unfortunately the DOM does exist, and it is synchronous.
+	</p>
+
+	<h2>Demo</h2>
+	<p>
+		You are in one right now.<br>
+		<button id="show-source">Show Source</button>
+		<pre><code id="script-show"></code></pre>
+	</p>
+
+	<h2>Usage</h2>
+	<p>
+		<pre><code>thaw([], intervalToTryAgain, {
+	each:function(i) {
+		//this = item of array
+	},
+	done: function() {
+		//this = item of array
+	}
+});
+</code></pre>
+
+	</p>
+
+	<h2>License</h2>
+	<p>
+		MIT, Copyright <a href="mailto:robertleeplummerjr@gmail.com">Robert Lee Plummer Jr.</a>
+	</p>
+
+	<hr id="slicer">
 </body>
+<script id="script1">
+console.log("start");
+
+var startTime = new Date(),
+	workCounter=0,
+	items = new Array(2000000),
+	body = document.body,
+	slicer = document.getElementById('slicer'),
+	ms;
+
+thaw(items, 50, {
+	each:function() {
+		var s = document.createElement("div");
+		s.innerHTML = (new Array(5)).join(workCounter);
+		body.insertBefore(s, slicer.nextSibling);
+		workCounter++;
+	},
+	done: function() {
+		ms = (new Date()).getTime() - startTime.getTime();
+		console.log("done: workCounter=" + workCounter + " time=" + ms + "ms");
+	}
+});
+</script>
 <script>
-	console.log("start");
+	document.getElementById('show-source').onclick = function() {
+		var source = document.getElementById('script1').innerHTML,
+			scriptShow = document.getElementById('script-show'),
+			s = scriptShow.style;
 
-	var startTime = new Date(),
-		workCounter=0,
-		items = new Array(2000000),
-		body = document.body,
-		p1 = document.getElementById('p1'),
-		ms;
+		scriptShow.innerHTML = source;
 
-	thaw(items, 50, {
-		each:function() {
-			var s = document.createElement("div");
-			s.innerHTML = (new Array(5)).join(workCounter);
-			body.insertBefore(s, p1.nextSibling);
-			workCounter++;
-		},
-		done: function() {
-			ms = (new Date()).getTime() - startTime.getTime();
-			console.log("done: workCounter=" + workCounter + " time=" + ms + "ms");
-		}
-	});
-
+		this.onclick = function() {
+			s.display = (s.display.length < 1 ? 'none' : '');
+		};
+	};
 </script>
 </html>

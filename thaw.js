@@ -7,22 +7,29 @@ var thaw = (function() {
 	}
 
 	var defaultSettings = {
-		each: function() {},
-		done: function() {}
-	};
+			each: function() {},
+			done: function() {}
+		},
+		thawing = false;
 
-	return function(items, burnTime, options) {
+	function thaw(items, burnTime, options) {
 		var i = 0,
 			_each = function() {
 				if(i<0) return;
 
 				setTimeout(_each, 0);
-
-				if((new Date()) < createFutureDate(burnTime))
-				{
-					if(i>=items.length) {i=-1; options.done.call(items[i]);return;}
-					options.each.call(items[i], i);
-					i++;
+				if (!thawing) {
+					if ((new Date()) < createFutureDate(burnTime)) {
+						if (i >= items.length) {
+							i = -1;
+							options.done.call(items[i]);
+							return;
+						}
+						thawing = true;
+						options.each.call(items[i], i);
+						thawing = false;
+						i++;
+					}
 				}
 			};
 
@@ -38,4 +45,10 @@ var thaw = (function() {
 
 		_each();
 	}
+
+	thaw.isThawing = function() {
+		return busy;
+	};
+
+	return thaw;
 })();
