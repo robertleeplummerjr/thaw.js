@@ -13,7 +13,7 @@ var thaw = (function() {
 		thawing = false;
 
 	/**
-	 *
+	 * thaw an array of items
 	 * @param {Array} items
 	 * @param {Object} [options]
 	 * @param {Number} [burnTime]
@@ -43,16 +43,22 @@ var thaw = (function() {
 
 				if (!thawing) {
 					if ((new Date()) < createFutureDate(burnTime)) {
-						if (i >= items.length) {
-							i = -1;
-							thawing = true;
-							if (done !== null) done.call(items[i]);
-							thawing = false;
+						if (i>=items.length) {
+
+							if (done !== null) {
+								thawing = true;
+								done.call(items[0]);
+								thawing = false;
+							}
+
 							return;
 						}
-						thawing = true;
-						if (each !== null) each.call(items[i], i);
-						thawing = false;
+
+						if (each !== null) {
+							thawing = true;
+							each.call(items[0], i);
+							thawing = false;
+						}
 						i++;
 					}
 				}
@@ -61,6 +67,20 @@ var thaw = (function() {
 		tick();
 	}
 
+	/**
+	 * thaw a single item
+	 * @param {Object} item
+	 * @param {Object} [options]
+	 * @param {Number} [burnTime]
+	 */
+	thaw.it = function(item, options, burnTime) {
+		thaw([item], options, burnTime)
+	};
+
+	/**
+	 * returns if system is thawing
+	 * @returns {boolean}
+	 */
 	thaw.isThawing = function() {
 		return thawing;
 	};
