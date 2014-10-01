@@ -47,7 +47,7 @@ var thaw = (function() {
 
 							if (done !== null) {
 								thawing = true;
-								done.call(items[0]);
+								done.call(items[i]);
 								thawing = false;
 							}
 
@@ -56,7 +56,7 @@ var thaw = (function() {
 
 						if (each !== null) {
 							thawing = true;
-							each.call(items[0], i);
+							each.call(items[i], i);
 							thawing = false;
 						}
 						i++;
