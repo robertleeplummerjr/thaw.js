@@ -58,6 +58,8 @@ var thaw = (function() {
 							thawing = true;
 							each.call(items[i], i);
 							thawing = false;
+						} else {
+							items[i]();
 						}
 						i++;
 					}
