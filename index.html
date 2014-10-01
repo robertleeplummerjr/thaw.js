@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
 	<meta charset="UTF-8">
-	<title>thaw.js - Now with extra anti-freeze!</title>
+	<title>thaw.js - synthetic asynchronous processing in javascript (Now with extra anti-freeze!)</title>
 	<script src="thaw.js"></script>
 	<style>
 		body {
@@ -15,10 +15,31 @@
 			width: 100%;
 			text-align: left;
 		}
+		.catchphrase {
+			text-align: center;
+		}
 	</style>
+	<script>
+		showSource = function(scriptId, codeId) {
+			var source = document.getElementById(scriptId).innerHTML,
+				scriptShow = document.getElementById(codeId);
+
+			if (scriptShow.innerHTML.length > 0) {
+				scriptShow.innerHTML = '';
+			} else {
+				scriptShow.innerHTML = source
+					.replace('(function() {', '')
+					.replace('})();', '');
+			}
+		};
+	</script>
 </head>
 <body>
 	<h1>thaw.js</h1>
+	<p class="catchphrase">
+		<em>synthetic asynchronous processing in javascript<br>
+			(Now with extra anti-freeze!)</em>
+	</p>
 	<p>
 		Browsers are synchronous. They have limits & can be slow.  thaw.js defers processes
 		until the browser is ready for them.<br>
@@ -27,19 +48,30 @@
 
 	<h2>Shouldn't I just use a web worker?</h2>
 	<p>
-		You could, if you don't care about the DOM.  Unfortunately the DOM does exist, and it is synchronous.
+		You could, if you don't care about the DOM.  Unfortunately the DOM does exist, and it is synchronous.  Web
+		workers do not have access to anything synchronous, including the DOM.
 	</p>
 
 	<h2>Demo</h2>
 	<p>
-		You are in one right now.<br/>
-		<button id="show-source">Show Source</button>
-		<pre><code id="script-show"></code></pre>
+		<b>You are in one right now!  Scroll to bottom to see.</b><br />
+		There are 2 million div elements being appended to this very document from
+		three separate thaw calls happening right now, 6 million total.  Does your browser seem slow or sluggish?  Of
+		course not!  It is thaw(.js)ing.
 	</p>
 
+	<button onclick="showSource('script-1', 'code-1');">Show Source One</button>
+	<pre><code id="code-1"></code></pre><br/>
+
+	<button onclick="showSource('script-2', 'code-2');">Show Source Two</button>
+	<pre><code id="code-2"></code></pre><br/>
+
+	<button onclick="showSource('script-3', 'code-3');">Show Source Three</button>
+	<pre><code id="code-3"></code></pre>
+
 	<h2>Usage</h2>
-	<p>
-		<pre><code>thaw([], {
+	<p>With Array's:</p>
+	<pre><code>thaw([], {
 	each:function(i) {
 		//this = item of array
 	},
@@ -48,8 +80,16 @@
 	}
 }, intervalToTryAgain);
 </code></pre>
-
-	</p>
+	<p>With Single Object:</p>
+	<pre><code>thaw.it({}, {
+	each:function(i) {
+		//this = item of array
+	},
+	done: function() {
+		//this = item of array
+	}
+}, intervalToTryAgain);
+</code></pre>
 
 	<h2>License</h2>
 	<p>
@@ -60,40 +100,79 @@
 
 	<a href="https://github.com/robertleeplummerjr/thaw.js"><img style="position: fixed; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 </body>
-<script id="script1">
-console.log("start");
+<script id="script-1">
+(function() {
+	console.log("start one");
 
-var startTime = new Date(),
-	workCounter=0,
-	items = new Array(2000000),
-	body = document.body,
-	slicer = document.getElementById('slicer'),
-	ms;
+	var startTime = new Date(),
+		workCounter=0,
+		items = new Array(2000000),
+		body = document.body,
+		slicer = document.getElementById('slicer'),
+		ms;
 
-thaw(items, {
-	each:function() {
-		var s = document.createElement("div");
-		s.innerHTML = (new Array(5)).join(workCounter);
-		body.insertBefore(s, slicer.nextSibling);
-		workCounter++;
-	},
-	done: function() {
-		ms = (new Date()).getTime() - startTime.getTime();
-		console.log("done: workCounter=" + workCounter + " time=" + ms + "ms");
-	}
-});
+	thaw(items, {
+		each:function() {
+			var s = document.createElement("div");
+			s.innerHTML = (new Array(5)).join(workCounter);
+			body.insertBefore(s, slicer.nextSibling);
+			workCounter++;
+		},
+		done: function() {
+			ms = (new Date()).getTime() - startTime.getTime();
+			console.log("done: demo one iterations=" + workCounter + " time=" + ms + "ms");
+		}
+	});
+})();
 </script>
-<script>
-	document.getElementById('show-source').onclick = function() {
-		var source = document.getElementById('script1').innerHTML,
-			scriptShow = document.getElementById('script-show'),
-			s = scriptShow.style;
+<script id="script-2">
+(function() {
+	console.log("start two");
 
-		scriptShow.innerHTML = source;
+	var startTime = new Date(),
+		workCounter=0,
+		items = new Array(2000000),
+		body = document.body,
+		slicer = document.getElementById('slicer'),
+		ms;
 
-		this.onclick = function() {
-			s.display = (s.display.length < 1 ? 'none' : '');
-		};
-	};
+	thaw(items, {
+		each:function() {
+			var s = document.createElement("div");
+			s.innerHTML = (new Array(5)).join(':D');
+			body.insertBefore(s, slicer.nextSibling);
+			workCounter++;
+		},
+		done: function() {
+			ms = (new Date()).getTime() - startTime.getTime();
+			console.log("done: demo two iterations=" + workCounter + " time=" + ms + "ms");
+		}
+	});
+})();
+</script>
+<script id="script-3">
+(function() {
+	console.log("start three");
+
+	var startTime = new Date(),
+		workCounter=0,
+		items = new Array(2000000),
+		body = document.body,
+		slicer = document.getElementById('slicer'),
+		ms;
+
+	thaw(items, {
+		each:function() {
+			var el = document.createElement("div");
+			el.innerHTML = (new Array(5)).join(':)');
+			body.insertBefore(el, slicer.nextSibling);
+			workCounter++;
+		},
+		done: function() {
+			ms = (new Date()).getTime() - startTime.getTime();
+			console.log("done: demo three iterations=" + workCounter + " time=" + ms + "ms");
+		}
+	});
+})();
 </script>
 </html>
