@@ -6,7 +6,7 @@
 	<script src="thaw.js"></script>
 	<style>
 		body {
-			width: 400px;
+			width: 450px;
 			margin-left: auto;
 			margin-right: auto;
 			text-align: center;
@@ -32,21 +32,21 @@
 
 	<h2>Demo</h2>
 	<p>
-		You are in one right now.<br>
+		You are in one right now.<br/>
 		<button id="show-source">Show Source</button>
 		<pre><code id="script-show"></code></pre>
 	</p>
 
 	<h2>Usage</h2>
 	<p>
-		<pre><code>thaw([], intervalToTryAgain, {
+		<pre><code>thaw([], {
 	each:function(i) {
 		//this = item of array
 	},
 	done: function() {
 		//this = item of array
 	}
-});
+}, intervalToTryAgain);
 </code></pre>
 
 	</p>
@@ -70,7 +70,7 @@ var startTime = new Date(),
 	slicer = document.getElementById('slicer'),
 	ms;
 
-thaw(items, 50, {
+thaw(items, {
 	each:function() {
 		var s = document.createElement("div");
 		s.innerHTML = (new Array(5)).join(workCounter);
