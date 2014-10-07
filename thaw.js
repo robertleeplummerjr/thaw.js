@@ -49,6 +49,7 @@ var thaw = (function() {
 								thawing = true;
 								done.call(items[i]);
 								thawing = false;
+								i = -1;
 							}
 
 							return;
