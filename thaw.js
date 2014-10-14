@@ -39,7 +39,7 @@ var thaw = (function() {
 			tick = function() {
 				if(i<0) return;
 
-				setTimeout(tick, 0);
+				var timeout = setTimeout(tick, 0);
 
 				if (!thawing) {
 					if ((new Date()) < createFutureDate(burnTime)) {
@@ -51,7 +51,8 @@ var thaw = (function() {
 								thawing = false;
 								i = -1;
 							}
-
+							
+							clearTimeout(timeout);
 							return;
 						}
 
