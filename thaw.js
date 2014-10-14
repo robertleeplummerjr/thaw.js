@@ -51,7 +51,7 @@ var thaw = (function() {
 								thawing = false;
 								i = -1;
 							}
-							
+
 							clearTimeout(timeout);
 							return;
 						}
