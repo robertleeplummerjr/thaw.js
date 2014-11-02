@@ -1,11 +1,5 @@
 var thaw = (function() {
 
-	function createFutureDate(milliseconds) {
-		var t = new Date();
-		t.setTime(t.getTime() + milliseconds);
-		return t;
-	}
-
 	var defaultSettings = {
 			each: function() {},
 			done: function() {}
@@ -42,29 +36,27 @@ var thaw = (function() {
 				var timeout = setTimeout(tick, 0);
 
 				if (!thawing) {
-					if ((new Date()) < createFutureDate(burnTime)) {
-						if (i>=items.length) {
+					if (i>=items.length) {
 
-							if (done !== null) {
-								thawing = true;
-								done.call(items[i]);
-								thawing = false;
-								i = -1;
-							}
-
-							clearTimeout(timeout);
-							return;
-						}
-
-						if (each !== null) {
+						if (done !== null) {
 							thawing = true;
-							each.call(items[i], i);
+							done.call(items[i]);
 							thawing = false;
-						} else {
-							items[i]();
+							i = -1;
 						}
-						i++;
+
+						clearTimeout(timeout);
+						return;
 					}
+
+					if (each !== null) {
+						thawing = true;
+						each.call(items[i], i);
+						thawing = false;
+					} else {
+						items[i]();
+					}
+					i++;
 				}
 			};
 
