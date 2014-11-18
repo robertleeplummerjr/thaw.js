@@ -93,7 +93,7 @@ var Thaw = (function() {
 		add: function(item) {
 			var doTick = false;
 
-			if (this.i < 0) {
+			if (this.i < 1) {
 				this.i = this.items.length;
 				doTick = true;
 			}
@@ -112,7 +112,7 @@ var Thaw = (function() {
 		addArray: function(items) {
 			var doTick = false;
 
-			if (this.i < 0) {
+			if (this.i < 1) {
 				this.i = this.items.length;
 				doTick = true;
 			}
