@@ -1,19 +1,16 @@
-var thaw = (function() {
+/**
+ * thaw an array of items
+ * @param {Array} items
+ * @param {Object} [options]
+ */
+var Thaw = (function() {
 
-	var defaultSettings = {
-			each: function() {},
-			done: function() {}
-		},
-		thawing = false;
+	//private variables
+	var thawing = false,
+		thaws = [];
 
-	/**
-	 * thaw an array of items
-	 * @param {Array} items
-	 * @param {Object} [options]
-	 * @param {Number} [burnTime]
-	 */
-	function thaw(items, options, burnTime) {
-		burnTime = (burnTime !== undefined ? burnTime : 50);
+	function setDefaults(options) {
+		var defaultSettings = Constructor.defaultSettings;
 
 		if (options !== undefined) {
 			for(var key in defaultSettings) {
@@ -26,23 +23,33 @@ var thaw = (function() {
 		} else {
 			options = {};
 		}
+		return options;
+	}
 
-		var i = 0,
-			each = (options.each !== undefined ? options.each : null),
-			done = (options.done !== undefined ? options.done : null),
-			tick = function() {
-				if(i<0) return;
+	//Constructor
+	function Constructor(items, options) {
+		options = setDefaults(options);
 
-				var timeout = setTimeout(tick, 0);
+		var timeout,
+			each = options.each,
+			done = options.done,
+			self = this,
+			tick = this.tick = function () {
+				var items = self.items,
+					i = self.i;
+
+				if (i < 0) return;
+
+				timeout = setTimeout(tick, 0);
 
 				if (!thawing) {
-					if (i>=items.length) {
+					if (i >= items.length) {
 
 						if (done !== null) {
 							thawing = true;
 							done.call(items[i]);
 							thawing = false;
-							i = -1;
+							self.i = -1;
 						}
 
 						clearTimeout(timeout);
@@ -56,30 +63,74 @@ var thaw = (function() {
 					} else {
 						items[i]();
 					}
-					i++;
+					self.i++;
 				}
 			};
+
+		this.i = 0;
+		this.items = items;
+
+		thaws.push(this);
 
 		tick();
 	}
 
 	/**
+	 *
+	 * @type {{each: null, done: null}}
+	 */
+	Constructor.defaultSettings = {
+		each: null,
+		done: null
+	};
+
+	Constructor.prototype = {
+		add: function(item) {
+			this.i = this.items.length;
+			this.items.push(item);
+			this.tick();
+		},
+		stop: function() {
+			this.i = -1;
+		}
+	};
+
+	/**
 	 * thaw a single item
 	 * @param {Object} item
 	 * @param {Object} [options]
-	 * @param {Number} [burnTime]
 	 */
-	thaw.it = function(item, options, burnTime) {
-		thaw([item], options, burnTime)
+	Constructor.it = function(item, options) {
+		return new Constructor([item], options)
 	};
 
 	/**
 	 * returns if system is thawing
 	 * @returns {boolean}
 	 */
-	thaw.isThawing = function() {
+	Constructor.isThawing = function() {
 		return thawing;
 	};
 
-	return thaw;
-})();
+	Constructor.stopAll = function() {
+		var i = 0,
+			max = thaws.length;
+
+		for(;i< max; i++) {
+			thaws[i].stop();
+		}
+	};
+
+	return Constructor;
+})(),
+
+thaw = (function(Thaw) {
+	function fn(items, options) {
+		return new Thaw(items, options);
+	}
+
+	fn.stopAll = Thaw.stopAll;
+	fn.isThawing = Thaw.isThawing;
+
+	return fn;
+})(Thaw);

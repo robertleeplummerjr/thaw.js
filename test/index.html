@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>({{pass}}|{{fail}}) {{title}} · Testify Suite</title>
+	<meta charset="utf-8" />
+	<script src="../bower_components/testify.js/Testify.js"></script>
+	<script src="../bower_components/vue/dist/vue.js"></script>
+	<script src="../thaw.js"></script>
+</head>
+<body></body>
+<script>
+	var tf = new Testify("thaw.js");
+</script>
+<script src="test.js"></script>
+<script>
+	tf.run();
+	document.body.innerHTML = Testify.report.html.ui;
+	Testify.report.html(tf);
+</script>
+</html>
