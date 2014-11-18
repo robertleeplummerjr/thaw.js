@@ -21,7 +21,7 @@ var Thaw = (function() {
 				}
 			}
 		} else {
-			options = {};
+			options = defaultSettings;
 		}
 		return options;
 	}
