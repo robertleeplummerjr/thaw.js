@@ -2,6 +2,7 @@
  * thaw an array of items
  * @param {Array} items
  * @param {Object} [options]
+ * @constructor
  */
 var Thaw = (function() {
 
@@ -85,11 +86,47 @@ var Thaw = (function() {
 	};
 
 	Constructor.prototype = {
+		/**
+		 *
+		 * @param item
+		 */
 		add: function(item) {
-			this.i = this.items.length;
+			var doTick = false;
+
+			if (this.i < 0) {
+				this.i = this.items.length;
+				doTick = true;
+			}
+
 			this.items.push(item);
-			this.tick();
+
+			if (doTick) {
+				this.tick();
+			}
 		},
+
+		/**
+		 *
+		 * @param items
+		 */
+		addArray: function(items) {
+			var doTick = false;
+
+			if (this.i < 0) {
+				this.i = this.items.length;
+				doTick = true;
+			}
+
+			this.items.concat(items);
+
+			if (doTick) {
+				this.tick();
+			}
+		},
+
+		/**
+		 *
+		 */
 		stop: function() {
 			this.i = -1;
 		}
@@ -105,13 +142,16 @@ var Thaw = (function() {
 	};
 
 	/**
-	 * returns if system is thawing
+	 * returns if Thaw.js is thawing
 	 * @returns {boolean}
 	 */
 	Constructor.isThawing = function() {
 		return thawing;
 	};
 
+	/**
+	 * Stops all Thaw.js instances
+	 */
 	Constructor.stopAll = function() {
 		var i = 0,
 			max = thaws.length;
@@ -124,6 +164,12 @@ var Thaw = (function() {
 	return Constructor;
 })(),
 
+/**
+ * wraps the constructor Thaw
+ * @param {Array} items
+ * @param {Object} [options]
+ * @returns Thaw
+ */
 thaw = (function(Thaw) {
 	function fn(items, options) {
 		return new Thaw(items, options);
