@@ -99,7 +99,7 @@ var Thaw = (function(window) {
 				doTick = true;
 			}
 
-			this.items.concat(items);
+			this.items = this.items.concat(items);
 
 			if (doTick) {
 				this.tick();
