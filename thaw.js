@@ -32,9 +32,9 @@ var Thaw = (function(window) {
 							thawing = true;
 							done.call(items[i]);
 							thawing = false;
-							self.i = -1;
 						}
 
+						self.i = -1;
 						clearTimeout(timeout);
 						return;
 					}
@@ -170,9 +170,9 @@ var Thaw = (function(window) {
 						thawing = true;
 						done.call(items[i]);
 						thawing = false;
-						i = -1;
 					}
 
+					i = -1;
 					clearTimeout(timeout);
 					return;
 				}
