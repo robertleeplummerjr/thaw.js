@@ -1,39 +1,21 @@
-/**
- * thaw an array of items
- * @param {Array} items
- * @param {Object} [options]
- * @constructor
- */
-var Thaw = (function() {
+var Thaw = (function(window) {
 
 	//private variables
 	var thawing = false,
 		thaws = [];
 
-	function setDefaults(options) {
-		var defaultSettings = Constructor.defaultSettings;
-
-		if (options !== undefined) {
-			for(var key in defaultSettings) {
-				if (defaultSettings.hasOwnProperty(key)) {
-					if (!options.hasOwnProperty(key)) {
-						options[key] = defaultSettings[key];
-					}
-				}
-			}
-		} else {
-			options = defaultSettings;
-		}
-		return options;
-	}
-
-	//Constructor
-	function Constructor(items, options) {
-		options = setDefaults(options);
+	/**
+	 * thaw an array of items
+	 * @param {Array} items
+	 * @param {Object} [options]
+	 * @constructor
+	 */
+	function Thaw(items, options) {
+		options = options || {};
 
 		var timeout,
-			each = options.each,
-			done = options.done,
+			each = options.each || null,
+			done = options.done || null,
 			self = this,
 			tick = this.tick = function () {
 				var items = self.items,
@@ -80,12 +62,12 @@ var Thaw = (function() {
 	 *
 	 * @type {{each: null, done: null}}
 	 */
-	Constructor.defaultSettings = {
+	Thaw.defaultSettings = {
 		each: null,
 		done: null
 	};
 
-	Constructor.prototype = {
+	Thaw.prototype = {
 		/**
 		 *
 		 * @param item
@@ -137,7 +119,7 @@ var Thaw = (function() {
 	 * @param {Object} item
 	 * @param {Object} [options]
 	 */
-	Constructor.it = function(item, options) {
+	Thaw.it = function(item, options) {
 		return new Constructor([item], options)
 	};
 
@@ -145,14 +127,14 @@ var Thaw = (function() {
 	 * returns if Thaw.js is thawing
 	 * @returns {boolean}
 	 */
-	Constructor.isThawing = function() {
+	Thaw.isThawing = function() {
 		return thawing;
 	};
 
 	/**
 	 * Stops all Thaw.js instances
 	 */
-	Constructor.stopAll = function() {
+	Thaw.stopAll = function() {
 		var i = 0,
 			max = thaws.length;
 
@@ -161,22 +143,60 @@ var Thaw = (function() {
 		}
 	};
 
-	return Constructor;
-})(),
 
-/**
- * wraps the constructor Thaw
- * @param {Array} items
- * @param {Object} [options]
- * @returns Thaw
- */
-thaw = (function(Thaw) {
-	function fn(items, options) {
-		return new Thaw(items, options);
+	/**
+	 * simple thaw
+	 * @param {Array} items
+	 * @param {Object} [options]
+	 * @returns Thaw
+	 */
+	function thaw(items, options) {
+		options = options || {};
+
+		var timeout,
+			i = 0,
+			done = options.done || null,
+			each = options.each || null;
+
+		function tick() {
+			if (i < 0) return;
+
+			timeout = setTimeout(tick, 0);
+
+			if (!thawing) {
+				if (i >= items.length) {
+
+					if (done !== null) {
+						thawing = true;
+						done.call(items[i]);
+						thawing = false;
+						i = -1;
+					}
+
+					clearTimeout(timeout);
+					return;
+				}
+
+				if (each !== null) {
+					thawing = true;
+					each.call(items[i], i);
+					thawing = false;
+				} else {
+					items[i]();
+				}
+				i++;
+			}
+		}
+
+		tick();
 	}
 
-	fn.stopAll = Thaw.stopAll;
-	fn.isThawing = Thaw.isThawing;
+	thaw.stopAll = Thaw.stopAll;
+	thaw.isThawing = Thaw.isThawing;
 
-	return fn;
-})(Thaw);
+	if (window !== null) {
+		window.thaw = thaw;
+	}
+
+	return Thaw;
+})(typeof window !== 'undefined' ? window : null);
