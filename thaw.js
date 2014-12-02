@@ -69,58 +69,97 @@ var Thaw = (function(window) {
 
 	Thaw.prototype = {
 		/**
-		 *
-		 * @param item
+		 * readies thaw to continue
+		 * @returns {boolean} if had to get ready
 		 */
-		add: function(item) {
-			var doTick = false;
-
+		makeReady: function() {
 			if (this.i < 1) {
 				this.i = this.items.length;
-				doTick = true;
+				return true;
 			}
+			return false;
+		},
+
+		/**
+		 * Adds an item to the end of this instance of Thaw and readies Thaw to process it
+		 * @param item
+		 * @returns {Thaw}
+		 */
+		add: function(item) {
+			var doTick = this.makeReady();
 
 			this.items.push(item);
 
 			if (doTick) {
 				this.tick();
 			}
+
+			return this;
 		},
 
 		/**
-		 *
-		 * @param items
+		 * Inserts an item just after the current item being processed in Thaw and readies Thaw to process it
+		 * @param item
+		 * @returns {Thaw}
+		 */
+		insert: function(item) {
+			var doTick = this.makeReady();
+
+			this.items.splice(this.i, 0, item);
+
+			if (doTick) {
+				this.tick();
+			}
+
+			return this;
+		},
+
+		/**
+		 * Adds an Array to the end of this instance of Thaw and readies Thaw to process it
+		 * @param {Array} items
+		 * @returns {Thaw}
 		 */
 		addArray: function(items) {
-			var doTick = false;
-
-			if (this.i < 1) {
-				this.i = this.items.length;
-				doTick = true;
-			}
+			var doTick = this.makeReady();
 
 			this.items = this.items.concat(items);
 
 			if (doTick) {
 				this.tick();
 			}
+
+			return this;
 		},
 
 		/**
-		 *
+		 * Inserts an Array just after the current item being processed in Thaw and readies Thaw to process them
+		 * @param {Array} items
+		 * @returns {Thaw}
+		 */
+		insertArray: function(items) {
+			var doTick = this.makeReady(),
+				left = this.items,
+				middle = items,
+				right = this.items.splice(this.i, (this.items.length - this.i) + 1);
+
+			this.items = left.concat(middle, right);
+
+			if (doTick) {
+				this.tick();
+			}
+
+			return this;
+		},
+
+		/**
+		 * Stops this instance of Thaw
+		 * @returns {Thaw}
 		 */
 		stop: function() {
 			this.i = -1;
-		}
-	};
 
-	/**
-	 * thaw a single item
-	 * @param {Object} item
-	 * @param {Object} [options]
-	 */
-	Thaw.it = function(item, options) {
-		return new Constructor([item], options)
+			return this;
+		}
 	};
 
 	/**
@@ -132,7 +171,7 @@ var Thaw = (function(window) {
 	};
 
 	/**
-	 * Stops all Thaw.js instances
+	 * Stops all Thaw instances
 	 */
 	Thaw.stopAll = function() {
 		var i = 0,
