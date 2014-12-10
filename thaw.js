@@ -22,9 +22,10 @@ var Thaw = (function(window) {
 				timeout = setTimeout(tick, 0);
 
 				if (!thawing) {
+					item = items[i];
+
 					if (i >= items.length) {
 
-						item = items[i];
 						if (done !== null) {
 							thawing = true;
 							done.call(item, i);
@@ -208,8 +209,9 @@ var Thaw = (function(window) {
 			timeout = setTimeout(tick, 0);
 
 			if (!thawing) {
+				item = items[i];
+
 				if (i >= items.length) {
-					item = items[i];
 
 					if (done !== null) {
 						thawing = true;
