@@ -77,7 +77,7 @@ var Thaw = (function(window) {
 		 * @returns {boolean} if had to get ready
 		 */
 		makeReady: function() {
-			if (this.i < 1) {
+			if (this.i < 0) {
 				this.i = this.items.length;
 				return true;
 			}
