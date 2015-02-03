@@ -13,11 +13,7 @@ var Thaw = (function(window) {
 	function Thaw(items, options) {
 		options = options || {};
 
-		var timeout,
-			each = options.each || null,
-			done = options.done || null,
-			self = this,
-			tick = this.tick = function () {
+		var tick = this.tick = function () {
 				var items = self.items,
 					i = self.i;
 
@@ -26,11 +22,13 @@ var Thaw = (function(window) {
 				timeout = setTimeout(tick, 0);
 
 				if (!thawing) {
+					item = items[i];
+
 					if (i >= items.length) {
 
 						if (done !== null) {
 							thawing = true;
-							done.call(items[i]);
+							done.call(item, i);
 							thawing = false;
 						}
 
@@ -41,14 +39,20 @@ var Thaw = (function(window) {
 
 					if (each !== null) {
 						thawing = true;
-						each.call(items[i], i);
+						each.call(item, i);
 						thawing = false;
-					} else {
-						items[i]();
+					} else if (item !== u) {
+						item();
 					}
 					self.i++;
 				}
-			};
+			},
+			each = options.each || null,
+			done = options.done || null,
+			u = undefined,
+			self = this,
+			timeout,
+			item;
 
 		this.i = 0;
 		this.items = items;
@@ -73,7 +77,7 @@ var Thaw = (function(window) {
 		 * @returns {boolean} if had to get ready
 		 */
 		makeReady: function() {
-			if (this.i < 1) {
+			if (this.i < 0) {
 				this.i = this.items.length;
 				return true;
 			}
@@ -195,7 +199,9 @@ var Thaw = (function(window) {
 		var timeout,
 			i = 0,
 			done = options.done || null,
-			each = options.each || null;
+			each = options.each || null,
+			item,
+			u = undefined;
 
 		function tick() {
 			if (i < 0) return;
@@ -203,11 +209,13 @@ var Thaw = (function(window) {
 			timeout = setTimeout(tick, 0);
 
 			if (!thawing) {
+				item = items[i];
+
 				if (i >= items.length) {
 
 					if (done !== null) {
 						thawing = true;
-						done.call(items[i]);
+						done.call(item, i);
 						thawing = false;
 					}
 
@@ -218,10 +226,10 @@ var Thaw = (function(window) {
 
 				if (each !== null) {
 					thawing = true;
-					each.call(items[i], i);
+					each.call(item, i);
 					thawing = false;
-				} else {
-					items[i]();
+				} else if (item !== u) {
+					item();
 				}
 				i++;
 			}
