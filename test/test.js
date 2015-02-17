@@ -76,3 +76,36 @@ tf.test('stopping, adding, going', function() {
 
 	tf.assertEquals(t.i > -1, true, 'is thawing');
 });
+
+tf.test('use thaw block', function() {
+	var t = new Thaw.Block({
+		each: function() {
+
+		}
+	});
+
+	t.addArray([0,1,2,3]);
+	t.addArray([0,1,2,3]);
+	t.addArray([0,1,2,3]);
+
+	tf.assertEquals(t.index === 3, true, 'is thawing');
+});
+
+
+tf.test('stop thaw block', function() {
+	var t = new Thaw.Block({
+		each: function() {
+
+		}
+	});
+
+	t.addArray([0,1,2,3]);
+	t.addArray([0,1,2,3]);
+	t.addArray([0,1,2,3]);
+
+	t.stop();
+
+	tf.assertEquals(t.thaws[0].i === -1, true, 'is thawing');
+	tf.assertEquals(t.thaws[1].i === -1, true, 'is thawing');
+	tf.assertEquals(t.thaws[2].i === -1, true, 'is thawing');
+});

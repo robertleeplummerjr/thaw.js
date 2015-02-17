@@ -186,6 +186,103 @@ var Thaw = (function(window) {
 		}
 	};
 
+	/**
+	 *
+	 * @param {Object} [options]
+	 * @param {Number} [count]
+	 * @constructor
+	 */
+	Thaw.Block = function(options, count) {
+		this.index = 0;
+		this.thaws = [];
+		this.count = 200 || count;
+		this.options = options;
+	};
+
+	Thaw.Block.prototype = {
+
+		/**
+		 * add an item to the end of items
+		 * @param item
+		 * @returns {Thaw.Block}
+		 */
+		add: function(item) {
+			this._next().add(item);
+
+			return this;
+		},
+
+		/**
+		 * add an Array to the end of items
+		 * @param items
+		 * @returns {Thaw.Block}
+		 */
+		addArray: function(items) {
+			this._next().addArray(items);
+			return this;
+		},
+
+		/**
+		 * insert an item into items @ current position
+		 * @param item
+		 * @returns {Thaw.Block}
+		 */
+		insert: function(item) {
+			this._next().insert(item);
+			return this;
+		},
+
+		/**
+		 * insert and array into items @ current position
+		 * @param items
+		 * @returns {Thaw.Block}
+		 */
+		insertArray: function(items) {
+			this._next().insertArray(items);
+			return this;
+		},
+
+		/**
+		 * Stops all thaws in this block
+		 * @returns {Thaw.Block}
+		 */
+		stop: function() {
+			var i = 0,
+				thaws = this.thaws,
+				max = thaws.length;
+
+			for (;i < max;i++) {
+				thaws[i].stop();
+			}
+
+			return this;
+		},
+
+		/**
+		 * Get next available in block
+		 * @returns {*}
+		 * @private
+		 */
+		_next: function() {
+			var _thaw,
+				i = this.index,
+				thaws = this.thaws;
+
+			if (this.thaws.length < this.count) {
+				this.thaws.push(_thaw = new Thaw([], this.options));
+			} else {
+				_thaw = thaws[i];
+			}
+
+			this.index++;
+			if (this.index > this.count) {
+				this.index = 0;
+			}
+
+			return _thaw;
+		}
+	};
+
 
 	/**
 	 * simple thaw
