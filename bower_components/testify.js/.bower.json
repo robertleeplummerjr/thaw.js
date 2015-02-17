@@ -1,5 +1,6 @@
 {
   "name": "testify.js",
+  "version": "1.0.1",
   "homepage": "https://github.com/robertleeplummerjr/testify.js",
   "authors": [
     "Robert Plummer <RobertLeePlummerJr@Gmail.com>"
@@ -25,14 +26,13 @@
   "dependencies": {
     "vue": "~0.10.6"
   },
-  "_release": "bc86440cb7",
+  "_release": "1.0.1",
   "_resolution": {
-    "type": "branch",
-    "branch": "master",
-    "commit": "bc86440cb7e10d5395edaec7836a90144bece16b"
+    "type": "version",
+    "tag": "v1.0.1",
+    "commit": "89b46adf795210dcdbf5da6f9206bfabd2f0aa1f"
   },
   "_source": "git://github.com/robertleeplummerjr/Testify.js.git",
   "_target": "*",
-  "_originalSource": "testify.js",
-  "_direct": true
+  "_originalSource": "testify.js"
 }

@@ -582,6 +582,27 @@ Testify.report.html = (function() {
 				}
 			}
 		});
+
+		if (testify.suiteResults.fail > 0) {
+			var content = document.getElementById('content'),
+				message = content.querySelector('div.message'),
+				passes = content.querySelectorAll('div > h2.pass'),
+				passParent,
+				i = 0,
+				max = (passes !== null ? passes.length : 0);
+
+			if (message !== null) {
+				message.style.cursor = 'pointer';
+				message.onclick = function () {
+					for (; i < max; i++) {
+						passParent = passes[i].parentNode;
+						passParent.style.display = (passParent.style.display.length  ? '' : 'none');
+					}
+					i = 0;
+				};
+				message.onclick();
+			}
+		}
 	}
 
 	Constructor.ui = '<style>\
