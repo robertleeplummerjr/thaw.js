@@ -195,7 +195,7 @@ var Thaw = (function(window) {
 	Thaw.Block = function(options, count) {
 		this.index = 0;
 		this.thaws = [];
-		this.count = 200 || count;
+		this.count = count || 200;
 		this.options = options;
 	};
 
@@ -207,7 +207,8 @@ var Thaw = (function(window) {
 		 * @returns {Thaw.Block}
 		 */
 		add: function(item) {
-			this._next().add(item);
+			var next = this._next();
+			next.add(item);
 
 			return this;
 		},
@@ -218,7 +219,9 @@ var Thaw = (function(window) {
 		 * @returns {Thaw.Block}
 		 */
 		addArray: function(items) {
-			this._next().addArray(items);
+			var next = this._next();
+			next.addArray(items);
+
 			return this;
 		},
 
@@ -228,7 +231,9 @@ var Thaw = (function(window) {
 		 * @returns {Thaw.Block}
 		 */
 		insert: function(item) {
-			this._next().insert(item);
+			var next = this._next();
+			next.insert(item);
+
 			return this;
 		},
 
@@ -238,7 +243,9 @@ var Thaw = (function(window) {
 		 * @returns {Thaw.Block}
 		 */
 		insertArray: function(items) {
-			this._next().insertArray(items);
+			var next = this._next();
+			next.insertArray(items);
+
 			return this;
 		},
 
@@ -275,7 +282,7 @@ var Thaw = (function(window) {
 			}
 
 			this.index++;
-			if (this.index > this.count) {
+			if (this.index >= this.count) {
 				this.index = 0;
 			}
 
