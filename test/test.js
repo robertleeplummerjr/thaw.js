@@ -109,3 +109,18 @@ tf.test('stop thaw block', function() {
 	tf.assertEquals(t.thaws[1].i === -1, true, 'is thawing');
 	tf.assertEquals(t.thaws[2].i === -1, true, 'is thawing');
 });
+
+tf.test('thaw block iteration', function() {
+	var t = new Thaw.Block({
+		each: function() {
+
+		}
+	},2);
+
+	t.addArray([0,1,2,3]);
+	t.addArray([0,1,2,3]);
+	t.addArray([0,1,2,3]);
+
+	tf.assertEquals(t.thaws[0].items.length === 8, true, 'added to correct array');
+	tf.assertEquals(t.thaws[1].items.length === 4, true, 'added to correct array');
+});
