@@ -22,7 +22,7 @@
     "test",
     "tests"
   ],
-  "dependencies": {
+  "devDependencies": {
     "testify.js": "*"
   }
 }
