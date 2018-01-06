@@ -1,0 +1,28 @@
+{
+  "name": "thaw.js",
+  "version": "1.2.2",
+  "description": "synthetic asynchronous processing in javascript",
+  "main": "thaw.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robertleeplummerjr/thaw.js.git"
+  },
+  "keywords": [
+    "multithread",
+    "cpu",
+    "async",
+    "synthetic"
+  ],
+  "author": "Robert Lee Plummer Jr. <robertleeplummerjr@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robertleeplummerjr/thaw.js/issues"
+  },
+  "homepage": "https://github.com/robertleeplummerjr/thaw.js#readme"
+}
