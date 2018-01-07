@@ -1,13 +1,14 @@
 {
   "name": "thaw.js",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "description": "synthetic asynchronous processing in javascript",
-  "main": "thaw.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "find ./test -name '*.js' | xargs node node_modules/mocha/bin/mocha --compilers js:babel-core/register",
+    "dist": "babel src --out-dir dist --source-maps",
+    "browser": "browserify ./dist/index.js -o browser.js",
+    "browser-min": "browserify ./dist/index.js -g uglifyify -o browser.min.js",
+    "make": "rm -fr ./dist && npm run dist && git add ./dist && npm run browser && npm run browser-min"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,11 @@
   "bugs": {
     "url": "https://github.com/robertleeplummerjr/thaw.js/issues"
   },
-  "homepage": "https://github.com/robertleeplummerjr/thaw.js#readme"
+  "homepage": "https://github.com/robertleeplummerjr/thaw.js#readme",
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "mocha": "^4.1.0",
+    "uglifyify": "^4.0.5",
+    "babel-core": "^6.26.0"
+  }
 }
