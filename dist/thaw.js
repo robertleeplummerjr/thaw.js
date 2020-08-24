@@ -1,244 +1,156 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.thaw = thaw;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-//private variables
-var thawing = false;
-var thaws = [];
-
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.thaw = exports.Thaw = void 0;
 /**
  * thaw an array of items
- * @param {Array} items
- * @param {Object} [options]
- * @constructor
  */
-
-var Thaw = function () {
-  _createClass(Thaw, null, [{
-    key: "stopAll",
-
-
+var Thaw = /** @class */ (function () {
+    function Thaw(items, options) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        var _a = __assign(__assign({}, Thaw.defaultSettings), options), each = _a.each, done = _a.done;
+        this.i = 0;
+        this.isStopped = false;
+        this.items = items;
+        this.options = options;
+        this.tick = function () {
+            if (_this.isStopped)
+                return;
+            _this.timeout = setTimeout(_this.tick, 0);
+            if (Thaw.thawing)
+                return;
+            var item = _this.items[_this.i];
+            if (_this.i >= _this.items.length) {
+                if (done !== null) {
+                    Thaw.thawing = true;
+                    done();
+                    Thaw.thawing = false;
+                }
+                _this.isStopped = true;
+                clearTimeout(_this.timeout);
+                return;
+            }
+            if (each !== null) {
+                Thaw.thawing = true;
+                each(item, _this.i);
+                Thaw.thawing = false;
+            }
+            else if (item !== undefined) {
+                item();
+            }
+            _this.i++;
+        };
+        Thaw.thaws.push(this);
+        if (!options.delay) {
+            this.tick();
+        }
+    }
+    Object.defineProperty(Thaw, "isThawing", {
+        /**
+         * returns if Thaw.js is thawing
+         */
+        get: function () {
+            return Thaw.thawing;
+        },
+        enumerable: false,
+        configurable: true
+    });
     /**
      * Stops all Thaw instances
      */
-    value: function stopAll() {
-      for (var i = 0; i < thaws.length; i++) {
-        thaws[i].stop();
-      }
-    }
-  }, {
-    key: "defaultSettings",
-
-    /**
-     *
-     * @type {{each: null, done: null}}
-     */
-    get: function get() {
-      return {
-        each: null,
-        done: null
-      };
-    }
-
-    /**
-     * returns if Thaw.js is thawing
-     * @returns {boolean}
-     */
-
-  }, {
-    key: "isThawing",
-    get: function get() {
-      return thawing;
-    }
-  }]);
-
-  function Thaw(items) {
-    var _this = this;
-
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    _classCallCheck(this, Thaw);
-
-    var _constructor$defaultS = _extends({}, this.constructor.defaultSettings, options),
-        each = _constructor$defaultS.each,
-        done = _constructor$defaultS.done;
-
-    this.items = items;
-    this.i = 0;
-    this.options = options;
-    var tick = this.tick = function () {
-      if (_this.i < 0) return;
-
-      _this.timeout = setTimeout(tick, 0);
-
-      if (thawing) return;
-      var item = items[_this.i];
-      if (_this.i >= items.length) {
-        if (done !== null) {
-          thawing = true;
-          done(item, _this.i);
-          thawing = false;
+    Thaw.stopAll = function () {
+        for (var i = 0; i < Thaw.thaws.length; i++) {
+            Thaw.thaws[i].stop();
         }
-
-        _this.i = -1;
-        clearTimeout(_this.timeout);
-        return;
-      }
-      if (each !== null) {
-        thawing = true;
-        each(item, _this.i);
-        thawing = false;
-      } else if (item !== undefined) {
-        item();
-      }
-      _this.i++;
     };
-
-    thaws.push(this);
-    if (!options.delay) {
-      tick();
-    }
-  }
-
-  /**
-   * readies thaw to continue
-   * @returns {boolean} if had to get ready
-   */
-
-
-  _createClass(Thaw, [{
-    key: "makeReady",
-    value: function makeReady() {
-      if (this.i < 0) {
-        this.i = this.items.length;
-        return true;
-      }
-      return false;
-    }
-
+    /**
+     * readies thaw to continue
+     */
+    Thaw.prototype.makeReady = function () {
+        if (this.isStopped) {
+            this.isStopped = false;
+            return true;
+        }
+        return false;
+    };
     /**
      * Adds an item to the end of this instance of Thaw and readies Thaw to process it
-     * @param item
-     * @returns {Thaw}
      */
-
-  }, {
-    key: "add",
-    value: function add(item) {
-      var doTick = this.makeReady();
-
-      this.items.push(item);
-
-      if (doTick) {
-        this.tick();
-      }
-      return this;
-    }
-
+    Thaw.prototype.add = function (item) {
+        this.items.push(item);
+        if (this.makeReady()) {
+            this.tick();
+        }
+        return this;
+    };
     /**
      * Inserts an item just after the current item being processed in Thaw and readies Thaw to process it
-     * @param item
-     * @returns {Thaw}
      */
-
-  }, {
-    key: "insert",
-    value: function insert(item) {
-      var doTick = this.makeReady();
-
-      this.items.splice(this.i, 0, item);
-
-      if (doTick) {
-        this.tick();
-      }
-
-      return this;
-    }
-
+    Thaw.prototype.insert = function (item) {
+        this.items.splice(this.i, 0, item);
+        if (this.makeReady()) {
+            this.tick();
+        }
+        return this;
+    };
     /**
      * Adds an Array to the end of this instance of Thaw and readies Thaw to process it
-     * @param {Array} items
-     * @returns {Thaw}
      */
-
-  }, {
-    key: "addArray",
-    value: function addArray(items) {
-      var doTick = this.makeReady();
-
-      this.items = this.items.concat(items);
-
-      if (doTick) {
-        this.tick();
-      }
-
-      return this;
-    }
-
+    Thaw.prototype.addArray = function (items) {
+        this.items = this.items.concat(items);
+        if (this.makeReady()) {
+            this.tick();
+        }
+        return this;
+    };
     /**
      * Inserts an Array just after the current item being processed in Thaw and readies Thaw to process them
-     * @param {Array} items
-     * @returns {Thaw}
      */
-
-  }, {
-    key: "insertArray",
-    value: function insertArray(items) {
-      var doTick = this.makeReady();
-      var left = this.items;
-      var middle = items;
-      var right = this.items.splice(this.i, this.items.length - this.i + 1);
-
-      this.items = left.concat(middle, right);
-
-      if (doTick) {
-        this.tick();
-      }
-      return this;
-    }
-
+    Thaw.prototype.insertArray = function (items) {
+        var before = this.items.splice(0, this.i);
+        var after = this.items;
+        this.items = before.concat(items, after);
+        if (this.makeReady()) {
+            this.tick();
+        }
+        return this;
+    };
     /**
      * Stops this instance of Thaw
-     * @returns {Thaw}
      */
-
-  }, {
-    key: "stop",
-    value: function stop() {
-      this.i = -1;
-      clearTimeout(this.timeout);
-      if (this.options.done) {
-        this.options.done();
-      }
-      return this;
-    }
-  }]);
-
-  return Thaw;
-}();
-
+    Thaw.prototype.stop = function () {
+        this.isStopped = true;
+        clearTimeout(this.timeout);
+        if (this.options.done) {
+            this.options.done();
+        }
+        return this;
+    };
+    Thaw.thawing = false;
+    Thaw.thaws = [];
+    Thaw.defaultSettings = {
+        each: null,
+        done: null
+    };
+    return Thaw;
+}());
+exports.Thaw = Thaw;
 /**
  * simple thaw
- * @param {Array} items
- * @param {Object} [options]
- * @returns Thaw
  */
-
-
-exports.default = Thaw;
-function thaw(items) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  return new Thaw(items, options);
+function thaw(items, options) {
+    return new Thaw(items, options);
 }
+exports.thaw = thaw;
 //# sourceMappingURL=thaw.js.map

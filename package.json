@@ -1,14 +1,22 @@
 {
   "name": "thaw.js",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "synthetic asynchronous processing in javascript",
+  "files": [
+    "browser.js",
+    "browser.min.js",
+    "dist/*.js",
+    "src/*.ts"
+  ],
   "main": "dist/index.js",
+  "browser": "browser.min.js",
   "scripts": {
-    "test": "find ./test -name '*.js' | xargs node node_modules/mocha/bin/mocha --compilers js:babel-core/register",
-    "dist": "babel src --out-dir dist --source-maps",
-    "browser": "browserify ./dist/index.js -o browser.js",
-    "browser-min": "browserify ./dist/index.js -g uglifyify -o browser.min.js",
-    "make": "rm -fr ./dist && npm run dist && git add ./dist && npm run browser && npm run browser-min"
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "dist": "tsc --outDir dist",
+    "browser": "lofi-bundler; tsc browser.ts --target es5 --module commonjs; rm browser.ts",
+    "browser-min": "uglifyjs browser.js --compress --mangle -o browser.min.js",
+    "make": "rm -rf ./dist; npm run dist; git add ./dist; npm run browser; npm run browser-min"
   },
   "repository": {
     "type": "git",
@@ -27,9 +35,16 @@
   },
   "homepage": "https://github.com/robertleeplummerjr/thaw.js#readme",
   "devDependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
-    "mocha": "^4.1.0",
-    "uglifyify": "^4.0.5",
-    "babel-core": "^6.26.0"
+    "jest": "^26.4.1",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.9.7",
+    "lofi-bundler": "^1.0.1",
+    "uglify-js": "^3.10.1"
+  },
+  "config": {
+    "lofi-bundler": {
+      "entry": "src/index.ts",
+      "target": "browser.ts"
+    }
   }
 }

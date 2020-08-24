@@ -1,38 +1,31 @@
-import Thaw from './';
+import { Thaw, IThawOptions } from './thaw';
 
-/**
- *
- * @param {Object} [options]
- * @param {Number} [count]
- * @constructor
- */
-export default class Block {
-  constructor(options, count) {
+export class Block {
+  index: number;
+  thaws: Thaw[];
+  count: number;
+  options: IThawOptions;
+  constructor(options?: IThawOptions, count: number = 200) {
     this.index = 0;
     this.thaws = [];
-    this.count = count || 200;
+    this.count = count;
     this.options = options;
   }
 
   /**
    * add an item to the end of items
-   * @param item
-   * @returns {Block}
    */
-  add(item) {
-    const next = this._next();
+  add(item: () => void): this {
+    const next = this.next();
     next.add(item);
-
     return this;
   }
 
   /**
    * add an Array to the end of items
-   * @param items
-   * @returns {Block}
    */
-  addArray(items) {
-    const next = this._next();
+  addArray(items: (() => void)[]): this {
+    const next = this.next();
     next.addArray(items);
 
     return this;
@@ -40,33 +33,26 @@ export default class Block {
 
   /**
    * insert an item into items @ current position
-   * @param item
-   * @returns {Block}
    */
-  insert(item) {
-    const next = this._next();
+  insert(item: () => void): this {
+    const next = this.next();
     next.insert(item);
-
     return this;
   }
 
   /**
    * insert and array into items @ current position
-   * @param items
-   * @returns {Block}
    */
-  insertArray(items) {
-    const next = this._next();
+  insertArray(items): this {
+    const next = this.next();
     next.insertArray(items);
-
     return this;
   }
 
   /**
    * Stops all thaws in this block
-   * @returns {Block}
    */
-  stop() {
+  stop(): this {
     for (let i = 0;i < this.thaws.length;i++) {
       this.thaws[i].stop();
     }
@@ -75,18 +61,18 @@ export default class Block {
 
   /**
    * Get next available in block
-   * @returns {*}
-   * @private
    */
-  _next() {
-    let thaw = null;
+  next(): Thaw | null {
+    let thaw: Thaw;
     const thaws = this.thaws;
 
     if (thaws.length < this.count) {
-      thaws.push(thaw = new Thaw([], this.options));
+      thaw = new Thaw([], this.options);
+      thaws.push(thaw);
     } else {
-      thaw = thaws[this.index];
+      thaw = thaws[this.index] || null;
     }
+
     this.index++;
     if (this.index >= this.count) {
       this.index = 0;
@@ -94,4 +80,4 @@ export default class Block {
 
     return thaw;
   }
-};
+}

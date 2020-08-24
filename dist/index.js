@@ -1,26 +1,17 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Block = undefined;
-
-var _thaw = require('./thaw');
-
-var _thaw2 = _interopRequireDefault(_thaw);
-
-var _block = require('./block');
-
-var _block2 = _interopRequireDefault(_block);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _thaw2.default;
-exports.Block = _block2.default;
-
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Block = exports.thaw = exports.Thaw = void 0;
+var thaw_1 = require("./thaw");
+Object.defineProperty(exports, "Thaw", { enumerable: true, get: function () { return thaw_1.Thaw; } });
+Object.defineProperty(exports, "thaw", { enumerable: true, get: function () { return thaw_1.thaw; } });
+var block_1 = require("./block");
+Object.defineProperty(exports, "Block", { enumerable: true, get: function () { return block_1.Block; } });
 if (typeof window !== 'undefined') {
-  window.Thaw = _thaw2.default;
-  window.Thaw.Block = _block2.default;
+    // @ts-ignore
+    window.Thaw = thaw_1.Thaw;
+    // @ts-ignore
+    window.thaw = thaw_1.thaw;
+    // @ts-ignore
+    window.Thaw.Block = block_1.Block;
 }
 //# sourceMappingURL=index.js.map

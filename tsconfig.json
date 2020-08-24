@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true
+  },
+  "include": ["src/*.ts"],
+  "exclude": ["src/*.test.ts", "src/test-utils.ts"]
+}
