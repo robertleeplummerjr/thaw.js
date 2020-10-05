@@ -11,3 +11,11 @@ if (typeof window !== 'undefined') {
   // @ts-ignore
   window.Thaw.Block = Block;
 }
+
+if (typeof module !== 'undefined') {
+  module.exports = { 
+    Thaw, 
+    thaw, 
+    Block 
+  };
+}
