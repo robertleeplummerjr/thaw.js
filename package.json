@@ -1,22 +1,23 @@
 {
   "name": "thaw.js",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "synthetic asynchronous processing in javascript",
   "files": [
     "browser.js",
     "browser.min.js",
     "dist/*.js",
-    "src/*.ts"
+    "dist/*.ts"
   ],
   "main": "dist/index.js",
   "browser": "browser.min.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
-    "dist": "tsc --outDir dist",
+    "dist": "tsc --outDir dist --declaration",
     "browser": "lofi-bundler; tsc browser.ts --target es5 --module commonjs; rm browser.ts",
     "browser-min": "uglifyjs browser.js --compress --mangle -o browser.min.js",
-    "make": "rm -rf ./dist; npm run dist; git add ./dist; npm run browser; npm run browser-min"
+    "make": "rm -rf ./dist; npm run dist; git add ./dist; npm run browser; npm run browser-min",
+    "prepare": "npm make"
   },
   "repository": {
     "type": "git",
