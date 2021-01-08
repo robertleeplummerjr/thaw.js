@@ -17,7 +17,7 @@
     "browser": "lofi-bundler; tsc browser.ts --target es5 --module commonjs; rm browser.ts",
     "browser-min": "uglifyjs browser.js --compress --mangle -o browser.min.js",
     "make": "rm -rf ./dist; npm run dist; git add ./dist; npm run browser; npm run browser-min",
-    "prepare": "npm make"
+    "prepare": "npm run make"
   },
   "repository": {
     "type": "git",
