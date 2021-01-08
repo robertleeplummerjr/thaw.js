@@ -12,7 +12,7 @@ Thaw.js helps keep the browser from freezing by splitting long computations into
 
 ## Usage
 ```ts
-import { thaw } from 'thaw';
+import { thaw } from 'thaw.js';
 import { matrixMultiply } from 'fake-math-library';
 
 let lastMatrix;
