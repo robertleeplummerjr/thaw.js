@@ -1,10 +1,11 @@
 {
   "name": "thaw.js",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "synthetic asynchronous processing in javascript",
   "files": [
     "browser.js",
     "browser.min.js",
+    "browser.min.js.map",
     "dist/*.js",
     "dist/*.ts"
   ],
