@@ -2,3 +2,6 @@ dist
 .idea
 coverage
 node_modules
+browser.js
+browser.min.js
+browser.min.js.map

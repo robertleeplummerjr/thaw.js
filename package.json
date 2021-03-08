@@ -1,6 +1,6 @@
 {
   "name": "thaw.js",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "synthetic asynchronous processing in javascript",
   "files": [
     "browser.js",
@@ -14,9 +14,9 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "dist": "tsc --outDir dist --declaration",
-    "browser": "lofi-bundler; tsc browser.ts --target es5 --module commonjs; rm browser.ts",
-    "browser-min": "uglifyjs browser.js --compress --mangle -o browser.min.js",
-    "make": "rm -rf ./dist; npm run dist; git add ./dist; npm run browser; npm run browser-min",
+    "browser": "lofi-bundler;  echo '\n\n export { Thaw, Block, thaw };' >> browser.ts; tsc browser.ts --target es5 --module commonjs; rm browser.ts;",
+    "browser-min": "uglifyjs browser.js --compress --mangle -o browser.min.js --wrap Thaw --source-map",
+    "make": "rm -rf ./dist; npm run dist; npm run browser; npm run browser-min",
     "prepare": "npm run make"
   },
   "repository": {
