@@ -1,6 +1,6 @@
 {
   "name": "thaw.js",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "synthetic asynchronous processing in javascript",
   "files": [
     "browser.js",
@@ -10,7 +10,7 @@
     "dist/*.ts"
   ],
   "main": "dist/index.js",
-  "browser": "browser.min.js",
+  "browser": "browser.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
@@ -41,7 +41,7 @@
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7",
     "lofi-bundler": "^1.0.1",
-    "uglify-js": "^3.10.1"
+    "uglify-js": "^3.13.0"
   },
   "config": {
     "lofi-bundler": {
